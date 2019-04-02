@@ -30,6 +30,7 @@ export default {
         return {
           title: c.title,
           desc: c.content,
+          url:"",
           meta: {
             source: c.visit_count,
             date: c.last_reply_at,
