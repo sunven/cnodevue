@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <x-header>with more menu</x-header>
+  <ViewBox>
+    <x-header  slot="header" style="width:100%;position:absolute;left:0;top:0;z-index:100;">CNODE</x-header>
     <router-view></router-view>
     <tabbar>
       <tabbar-item>
@@ -20,7 +20,7 @@
         <span slot="label">News</span>
       </tabbar-item>
     </tabbar>
-  </div>
+  </ViewBox>
 </template>
 <script>
 import {

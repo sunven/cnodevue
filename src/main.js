@@ -5,9 +5,11 @@ import FastClick from 'fastclick';
 import VueRouter from 'vue-router';
 import App from './App';
 import router from './router/index';
+import Vuex from 'vuex'
 import axiosUtil from './util/axiosUtil';
 
 Vue.use(VueRouter);
+Vue.use(Vuex)
 Vue.prototype.$axios = axiosUtil;
 
 // const routes = [{
