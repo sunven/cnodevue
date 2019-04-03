@@ -1,8 +1,18 @@
 <template>
-  <div>
+  <ViewBox>
+    <x-header
+      slot="header"
+      style="width:100%;left:0;top:0;z-index:100;"
+    >个人中心</x-header>
     <card>
-      <p class="card-padding" slot="header">{{title}}</p>
-      <div slot="content" class="card-padding">
+      <p
+        class="card-padding"
+        slot="header"
+      >{{title}}</p>
+      <div
+        slot="content"
+        class="card-padding"
+      >
         <div class="divdes">
           作者：
           <!-- <a style="color:blue" :href="'/User/'+loginname">{{loginname}}</a> -->
@@ -14,19 +24,23 @@
         </div>
         <div class="divdes">
           最后回复时间：
-          <span class="day">{{last_reply_at}}</span>
+          <span class="day">{{last_reply_at_format}}</span>
         </div>
         <span v-html="content"></span>
       </div>
     </card>
-    <panel :list="replies" type="5"></panel>
-  </div>
+    <panel
+      :list="replies"
+      type="5"
+    ></panel>
+  </ViewBox>
 </template>
 <script>
-import { ViewBox, Panel } from "vux";
+import { ViewBox, Panel, Card, XHeader } from "vux";
+import dayjs from "dayjs";
 export default {
   props: ["id"],
-  components: { ViewBox, Panel },
+  components: { ViewBox, Panel, Card, XHeader },
   data() {
     return {
       title: "",
@@ -37,6 +51,11 @@ export default {
       loginname: "",
       replies: []
     };
+  },
+  computed: {
+    last_reply_at_format() {
+      return dayjs(this.last_reply_at).format("YYYY-MM-DD HH:mm:ss");
+    }
   },
   created() {
     this.getData();
@@ -62,7 +81,7 @@ export default {
               meta: {
                 source: "",
                 date: c.author.loginname,
-                other: c.create_at
+                other: dayjs(c.create_at).format("YYYY-MM-DD HH:mm:ss")
               }
             };
           });

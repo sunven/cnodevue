@@ -1,37 +1,98 @@
 <template>
-  <view-box ref="viewBox" body-padding-top="46px" body-padding-bottom="0">
-    <tab slot="header" style="width:100%;position:absolute;left:0;top:0;z-index:100;">
-      <tab-item
-        :selected="index === tabitemindex"
-        :key="index"
-        v-for="(item,index) in tabitemdata"
-        @on-item-click="onItemClick"
-      >{{item}}</tab-item>
-    </tab>
-    <swiper
-      style="height:100%;"
-      height="100%"
-      v-model="tabitemindex"
-      :show-dots="false"
-      @on-index-change="swiperChange"
+  <div style="height:100%;">
+    <view-box
+      ref="viewBox"
+      body-padding-top="46px"
+      body-padding-bottom="46px"
     >
-      <swiper-item :key="index" v-for="(item,index) in tabitemdata">
-        <panel :footer="footer" @on-click-footer="footerClick" :list="list" :type="type"></panel>
-      </swiper-item>
-    </swiper>
-  </view-box>
+      <x-header
+        slot="header"
+        :left-options="{showBack: false}"
+        style="width:100%;position:absolute;left:0;top:0;z-index:100;"
+      >CNODEJS</x-header>
+      <view-box
+        ref="viewBox"
+        body-padding-top="46px"
+        body-padding-bottom="0"
+      >
+        <tab
+          slot="header"
+          style="width:100%;position:absolute;left:0;top:0;z-index:100;"
+        >
+          <tab-item
+            :selected="index === tabitemindex"
+            :key="index"
+            v-for="(item,index) in tabitemdata"
+            @on-item-click="onItemClick"
+          >{{item}}</tab-item>
+        </tab>
+        <swiper
+          style="height:100%;"
+          height="100%"
+          v-model="tabitemindex"
+          :show-dots="false"
+          @on-index-change="swiperChange"
+        >
+          <swiper-item
+            :key="index"
+            v-for="(item,index) in tabitemdata"
+          >
+            <panel
+              :footer="footer"
+              @on-click-footer="footerClick"
+              :list="list"
+              :type="type"
+            ></panel>
+          </swiper-item>
+        </swiper>
+      </view-box>
+      <tabbar slot="bottom">
+        <tabbar-item
+          selected
+          link="/"
+        >
+          <img
+            slot="icon"
+            src="../assets/icon_nav_article.png"
+          >
+          <span slot="label">主题</span>
+        </tabbar-item>
+        <tabbar-item link="/My">
+          <img
+            slot="icon"
+            src="../assets/icon_nav_button.png"
+          >
+          <span slot="label">我的</span>
+        </tabbar-item>
+      </tabbar>
+    </view-box>
+  </div>
 </template>
 <script>
-import { ViewBox, Panel, Tab, TabItem, Swiper, SwiperItem } from "vux";
+import {
+  XHeader,
+  ViewBox,
+  Panel,
+  Tab,
+  TabItem,
+  Tabbar,
+  TabbarItem,
+  Swiper,
+  SwiperItem
+} from "vux";
 import getTopics from "../api/getTopics.js";
 import { constants } from "crypto";
+import dayjs from "dayjs";
 export default {
   directives: {},
   components: {
+    XHeader,
     ViewBox,
     Panel,
     Tab,
     TabItem,
+    Tabbar,
+    TabbarItem,
     Swiper,
     SwiperItem
   },
@@ -71,7 +132,7 @@ export default {
               url: "/Detail/" + c.id,
               meta: {
                 source: c.visit_count,
-                date: c.last_reply_at,
+                date: dayjs(c.last_reply_at).format("YYYY-MM-DD HH:mm:ss"),
                 other: c.author.loginname
               }
             };

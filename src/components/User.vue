@@ -1,5 +1,16 @@
 <template>
-  <div>
+  <ViewBox>
+    <x-header
+      slot="header"
+      style="width:100%;left:0;top:0;z-index:100;"
+    >{{loginname}}</x-header>
+    <div style="text-align: center;margin:4px;"><img
+        :src="src"
+        alt=""
+      >
+      <!-- <p>{{loginname}}</p> -->
+      <p>{{score}}</p>
+    </div>
     <tab>
       <tab-item
         :selected="index === tabitemindex"
@@ -8,26 +19,46 @@
         @on-item-click="onItemClick"
       >{{item}}</tab-item>
     </tab>
-    <swiper v-model="index" height="100px" :show-dots="false">
+    <swiper
+      style="height:100%;"
+      height="100%"
+      v-model="tabitemindex"
+      :show-dots="false"
+    >
       <swiper-item>
-        <div class="tab-swiper vux-center">最近主题</div>
+        <panel
+          :list="recent_topics"
+          type="4"
+        ></panel>
       </swiper-item>
       <swiper-item>
-        <div class="tab-swiper vux-center">最近回复</div>
+        <panel
+          :list="recent_replies"
+          type="2"
+        ></panel>
       </swiper-item>
     </swiper>
-  </div>
+  </ViewBox>
+  <!-- <div style="height:100%;padding-bottom:46px;">
+    
+  </div> -->
 </template>
 
 <script>
-import { Tab, TabItem } from "vux";
+import dayjs from "dayjs";
+import { ViewBox,Tab, TabItem, Swiper, SwiperItem, Panel, XHeader } from "vux";
 export default {
-  components: { Tab, TabItem },
+  components: { ViewBox,Tab, TabItem, Swiper, SwiperItem, Panel, XHeader },
   props: ["name"],
   data() {
     return {
-      tabitemdata: ["全部", "精华", "分享", "问答", "招聘"],
+      loginname: "",
+      src: "",
+      score: "",
+      tabitemdata: ["主题", "回复"],
       tabitemindex: 0,
+      recent_topics: [],
+      recent_replies: [],
       index: 0
     };
   },
@@ -39,9 +70,37 @@ export default {
       const that = this;
       this.$axios
         .get("https://cnodejs.org/api/v1/user/" + that.name)
-        .then(res => {});
+        .then(res => {
+          that.loginname = res.data.data.loginname;
+          that.score = res.data.data.score;
+          that.src = res.data.data.avatar_url;
+
+          that.recent_topics = res.data.data.recent_topics.map(c => {
+            return {
+              title: c.title,
+              desc: dayjs(c.last_reply_at).format("YYYY-MM-DD HH:mm:ss"),
+              url: "/Detail/" + c.id
+            };
+          });
+          that.recent_replies = res.data.data.recent_replies.map(c => {
+            return {
+              title: c.title,
+              desc: dayjs(c.last_reply_at).format("YYYY-MM-DD HH:mm:ss"),
+              url: "/Detail/" + c.id
+            };
+          });
+        });
+    },
+    onItemClick(index) {
+      this.tabitemindex = index;
     }
   }
 };
 </script>
+<style>
+.vux-slider > .vux-swiper > .vux-swiper-item {
+  /* height: calc(100% - 46px); */
+  overflow: auto;
+}
+</style>
 
