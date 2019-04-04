@@ -1,24 +1,13 @@
 <template>
   <div style="height:100%;">
-    <view-box
-      ref="viewBox"
-      body-padding-top="46px"
-      body-padding-bottom="46px"
-    >
+    <view-box ref="viewBox" body-padding-top="46px" body-padding-bottom="46px">
       <x-header
         slot="header"
         :left-options="{showBack: false}"
         style="width:100%;position:absolute;left:0;top:0;z-index:100;"
       >CNODEJS</x-header>
-      <view-box
-        ref="viewBox"
-        body-padding-top="46px"
-        body-padding-bottom="0"
-      >
-        <tab
-          slot="header"
-          style="width:100%;position:absolute;left:0;top:0;z-index:100;"
-        >
+      <view-box ref="viewBox" body-padding-top="46px" body-padding-bottom="0">
+        <tab slot="header" style="width:100%;position:absolute;left:0;top:0;z-index:100;">
           <tab-item
             :selected="index === tabitemindex"
             :key="index"
@@ -33,35 +22,18 @@
           :show-dots="false"
           @on-index-change="swiperChange"
         >
-          <swiper-item
-            :key="index"
-            v-for="(item,index) in tabitemdata"
-          >
-            <panel
-              :footer="footer"
-              @on-click-footer="footerClick"
-              :list="list"
-              :type="type"
-            ></panel>
+          <swiper-item :key="index" v-for="(item,index) in tabitemdata">
+            <panel :footer="footer" @on-click-footer="footerClick" :list="list" :type="type"></panel>
           </swiper-item>
         </swiper>
       </view-box>
       <tabbar slot="bottom">
-        <tabbar-item
-          selected
-          link="/"
-        >
-          <img
-            slot="icon"
-            src="../assets/icon_nav_article.png"
-          >
+        <tabbar-item selected link="/">
+          <img slot="icon" src="../assets/icon_nav_article.png">
           <span slot="label">主题</span>
         </tabbar-item>
         <tabbar-item link="/My">
-          <img
-            slot="icon"
-            src="../assets/icon_nav_button.png"
-          >
+          <img slot="icon" src="../assets/icon_nav_button.png">
           <span slot="label">我的</span>
         </tabbar-item>
       </tabbar>
@@ -83,6 +55,10 @@ import {
 import getTopics from "../api/getTopics.js";
 import { constants } from "crypto";
 import dayjs from "dayjs";
+
+import { mapState } from "vuex";
+import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 export default {
   directives: {},
   components: {
@@ -98,6 +74,7 @@ export default {
   },
   data() {
     return {
+      show1: false,
       tabitemdata: ["全部", "精华", "分享", "问答", "招聘"],
       datatype: ["all", "good", "share", "ask", "job"],
       tabitemindex: 0,
@@ -111,12 +88,24 @@ export default {
       isItemClick: false
     };
   },
+  computed: {
+    ...mapState({
+      tabIndex: state => state.tabIndex
+    }),
+    ...mapGetters(["getTabIndex"])
+  },
   created() {
-    this.getData();
+    this.tabitemindex = this.getTabIndex;
+    //this.getData();
+  },
+  watch: {
+    tabitemindex(newValue, oldValue) {
+      this.setTabIndex(newValue);
+    }
   },
   methods: {
+    ...mapMutations(["setTabIndex"]),
     getData() {
-      console.log(2);
       const that = this;
       getTopics(
         that.datatype[that.tabitemindex],

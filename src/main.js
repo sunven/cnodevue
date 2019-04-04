@@ -8,9 +8,20 @@ import router from './router/index';
 import Vuex from 'vuex'
 import axiosUtil from './util/axiosUtil';
 
+import Loading from './components/loading';
+
+
 Vue.use(VueRouter);
 Vue.use(Vuex)
 Vue.prototype.$axios = axiosUtil;
+
+//store
+import appStore from "./store/appStore"
+const store = new Vuex.Store(appStore)
+import lStorage from 'store'
+Vue.prototype.$lStorage = lStorage
+
+Vue.prototype.$Loading = Loading;
 
 // const routes = [{
 //   path: '/',
@@ -27,6 +38,7 @@ Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({
+  store,
   router,
   render: h => h(App),
 }).$mount('#app');
